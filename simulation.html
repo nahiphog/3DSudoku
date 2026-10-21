@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Sudoku Simulation</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="sudoku-core.js" defer></script>
+  <script src="simulation.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">3D SUDOKU</p>
+      <h1>Simulation</h1>
+      <p class="description">Generate dug puzzles and track the number of given cells in each one.</p>
+      <p><a href="index.html">← Back to 3D Sudoku</a></p>
+      <p><a href="verify.html">Verify a puzzle →</a></p>
+    </header>
+    <section class="workspace simulation-workspace" aria-label="Simulation">
+      <form id="simulation-form" class="simulation-form">
+        <label>Total trials <select id="trials"><option>1</option><option>10</option><option>100</option><option selected>1000</option><option>10000</option><option>100000</option><option>1000000</option></select></label>
+        <label>Display puzzle strings with at most <select id="threshold"><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option selected>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option></select> given cells</label>
+        <div class="simulation-actions"><button type="submit" id="start">Start simulation</button><button type="button" id="stop" disabled>Stop</button></div>
+      </form>
+      <p id="progress" class="status" role="status" aria-live="polite">Ready to start.</p>
+      <section aria-labelledby="distribution-title"><h2 id="distribution-title">Given-cell counts</h2><p id="summary" class="description">No trials completed yet.</p><table><thead><tr><th scope="col">Given cells</th><th scope="col">Puzzles</th><th scope="col">Percentage</th></tr></thead><tbody id="distribution"></tbody></table></section>
+      <section aria-labelledby="matches-title" class="matches"><h2 id="matches-title">Matching puzzles</h2><p class="description">One 48-character string per puzzle, with a dot for each blank cell.</p><label for="matches">Puzzle strings</label><textarea id="matches" rows="8" readonly spellcheck="false"></textarea><button type="button" id="copy-matches" disabled>Copy all strings</button><p id="copy-result" class="status" role="status"></p></section>
+    </section>
+    <footer>3D SUDOKU <span>•</span> SIMULATION</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify 3D Sudoku</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="sudoku-core.js" defer></script>
+  <script src="verify.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">3D SUDOKU</p>
+      <h1>Verify a puzzle</h1>
+      <p class="description">Check whether a 3D Sudoku grid has a unique solution.</p>
+      <p><a href="index.html">← Back to 3D Sudoku</a> · <a href="simulation.html">Simulation</a></p>
+    </header>
+    <section class="workspace simulation-workspace">
+      <form id="verify-form" class="verify-form">
+        <label for="grid-input">Puzzle string</label>
+        <p id="grid-help" class="description">Enter 48 characters in cell order, using digits 1–8 for givens and a dot (.) for each blank.</p>
+        <textarea id="grid-input" rows="3" spellcheck="false" aria-describedby="grid-help" required></textarea>
+        <button type="submit" id="verify-button">Verify</button>
+      </form>
+      <p id="verify-result" class="verify-result" role="status" aria-live="polite"></p>
+    </section>
+    <footer>3D SUDOKU <span>•</span> VERIFY</footer>
+  </main>
+</body>
+</html>
