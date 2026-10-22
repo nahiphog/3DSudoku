@@ -1,0 +1,23 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const ctx = vm.createContext({ Math });
+for (const file of ['sudoku-core.js', 'techniques.js', 'rating.js']) vm.runInContext(fs.readFileSync(file, 'utf8'), ctx, { filename: file });
+const result = vm.runInContext(`(() => {
+  const puzzle = Array.from('....7...1....64..........32..7.47....52........1', c => c === '.' ? 0 : Number(c));
+  const state = createTechniqueState(puzzle);
+  const step = bruteForceStep(state);
+  const verified = verifyTechniqueStep(state, step);
+  const before = state.values.filter(Boolean).length;
+  applyTechniqueStep(state, step);
+  return { step, verified, before, after: state.values.filter(Boolean).length, solutions: countStateSolutions(state, 2) };
+})()`, ctx);
+assert.equal(result.step.technique, 'Brute force');
+assert.equal(result.verified, true);
+assert.equal(result.after, result.before + 1);
+assert.equal(result.solutions, 1);
+assert.equal(vm.runInContext("techniqueRatings['Brute force']", ctx), 10000);
+assert.equal(vm.runInContext("'ALS-XY-Wing' in techniqueRatings", ctx), false);
+const ambiguous = vm.runInContext('bruteForceStep(createTechniqueState(Array(48).fill(0)))', ctx);
+assert.equal(ambiguous, undefined, 'Do not guess when no digit is forced');
+console.log('Verified forced brute-force placement, rating, and ambiguous-grid handling.');

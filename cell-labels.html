@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Sudoku Cell Labels</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="navigation.js" defer></script>
+  <script src="cube-board.js" defer></script>
+  <script src="cell-labels.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <nav class="page-navigation" aria-label="Pages"><label for="page-menu">Page</label><select id="page-menu"><option value="index.html">Generate</option><option value="custom-build.html">Custom Build</option><option value="verify.html">Verify</option><option value="simulation.html">Simulation</option><option value="simulation-difficulty.html">Simulation difficulty</option><option value="techniques.html">Techniques</option><option value="cell-labels.html" selected>Cell labels</option></select></nav>
+      <h1>Cell labels</h1>
+      <p class="description">Reference numbers for all 48 visible cells of the 3D Sudoku cube.</p>
+    </header>
+    <section class="workspace">
+      <svg id="labels-cube" class="cube" viewBox="0 0 600 570" role="img" aria-labelledby="labels-title labels-description"><title id="labels-title">3D Sudoku cell labels</title><desc id="labels-description">The top face contains cells 1 to 16, the left face 17 to 32, and the right face 33 to 48. Each face is numbered in rows of four, from left to right and top to bottom.</desc></svg>
+      <p class="description">The top face contains cells 1–16, the left face 17–32, and the right face 33–48. On each face, labels follow rows of four from left to right and top to bottom.</p>
+    </section>
+    <footer>3D SUDOKU <span>•</span> CELL LABELS</footer>
+  </main>
+</body>
+</html>

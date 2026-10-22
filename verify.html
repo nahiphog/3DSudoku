@@ -5,16 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Verify 3D Sudoku</title>
   <link rel="stylesheet" href="style.css">
+  <script src="navigation.js" defer></script>
   <script src="sudoku-core.js" defer></script>
+  <script src="techniques.js" defer></script>
+  <script src="rating.js" defer></script>
+  <script src="cube-board.js" defer></script>
+  <script src="walkthrough.js" defer></script>
   <script src="verify.js" defer></script>
 </head>
 <body>
   <main class="app">
     <header>
+      <nav class="page-navigation" aria-label="Pages"><label for="page-menu">Page</label><select id="page-menu"><option value="index.html">Generate</option><option value="custom-build.html">Custom Build</option><option value="verify.html" selected>Verify</option><option value="simulation.html">Simulation</option><option value="simulation-difficulty.html">Simulation difficulty</option><option value="techniques.html">Techniques</option><option value="cell-labels.html">Cell labels</option></select></nav>
       <p class="eyebrow">3D SUDOKU</p>
       <h1>Verify a puzzle</h1>
       <p class="description">Check whether a 3D Sudoku grid has a unique solution.</p>
-      <p><a href="index.html">← Back to 3D Sudoku</a> · <a href="simulation.html">Simulation</a></p>
     </header>
     <section class="workspace simulation-workspace">
       <form id="verify-form" class="verify-form">
@@ -24,6 +29,30 @@
         <button type="submit" id="verify-button">Verify</button>
       </form>
       <p id="verify-result" class="verify-result" role="status" aria-live="polite"></p>
+      <section id="walkthrough" class="walkthrough" hidden aria-labelledby="walkthrough-title">
+        <h2 id="walkthrough-title">Solution walkthrough</h2>
+        <p id="walkthrough-status" class="status" role="status"></p>
+        <svg id="walkthrough-cube" class="cube walkthrough-cube" viewBox="0 0 600 570" role="img" aria-label="Walkthrough position"></svg>
+        <label for="walkthrough-slider">Walkthrough step <span id="walkthrough-count"></span></label>
+        <input id="walkthrough-slider" type="range" min="0" max="0" value="0" disabled>
+        <div class="walkthrough-buttons">
+          <button type="button" id="walk-first">Step 0</button>
+          <button type="button" id="walk-prev">Previous step</button>
+          <button type="button" id="walk-next">Next step</button>
+          <button type="button" id="walk-last">Last step</button>
+        </div>
+        <p id="walkthrough-description" aria-live="polite"></p>
+        <p class="description">Step 0 shows all legal candidates as pencil marks. Red crossed-out marks were eliminated in this step. Gold marks referenced rows and pattern cells; blue marks directly changed cells.</p>
+        <h3>Technique tally</h3>
+        <p id="difficulty-rating" class="description">Calculating difficulty…</p>
+        <table><thead><tr><th scope="col">Technique</th><th scope="col">Rating per step</th><th scope="col">Steps</th></tr></thead><tbody id="technique-tally"></tbody></table>
+      </section>
+      <section class="technique-panel" aria-labelledby="technique-title">
+        <h2 id="technique-title">Logical step</h2>
+        <p class="description">Find a supported deduction and check it against all valid completions of this position.</p>
+        <button type="button" id="find-step">Find a verified step</button>
+        <p id="step-result" class="verify-result" role="status" aria-live="polite"></p>
+      </section>
     </section>
     <footer>3D SUDOKU <span>•</span> VERIFY</footer>
   </main>

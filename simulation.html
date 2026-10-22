@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>3D Sudoku Simulation</title>
   <link rel="stylesheet" href="style.css">
+  <script src="navigation.js" defer></script>
   <script src="sudoku-core.js" defer></script>
   <script src="simulation.js" defer></script>
 </head>
 <body>
   <main class="app">
     <header>
+      <nav class="page-navigation" aria-label="Pages"><label for="page-menu">Page</label><select id="page-menu"><option value="index.html">Generate</option><option value="custom-build.html">Custom Build</option><option value="verify.html">Verify</option><option value="simulation.html" selected>Simulation</option><option value="simulation-difficulty.html">Simulation difficulty</option><option value="techniques.html">Techniques</option><option value="cell-labels.html">Cell labels</option></select></nav>
       <p class="eyebrow">3D SUDOKU</p>
       <h1>Simulation</h1>
       <p class="description">Generate dug puzzles and track the number of given cells in each one.</p>
-      <p><a href="index.html">← Back to 3D Sudoku</a></p>
-      <p><a href="verify.html">Verify a puzzle →</a></p>
     </header>
     <section class="workspace simulation-workspace" aria-label="Simulation">
       <form id="simulation-form" class="simulation-form">

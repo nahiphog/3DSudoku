@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Sudoku Custom Build</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="navigation.js" defer></script>
+  <script src="sudoku-core.js" defer></script>
+  <script src="techniques.js" defer></script>
+  <script src="rating.js" defer></script>
+  <script src="cube-board.js" defer></script>
+  <script src="walkthrough.js" defer></script>
+  <script src="3d-sudoku.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <nav class="page-navigation" aria-label="Pages"><label for="page-menu">Page</label><select id="page-menu"><option value="index.html">Generate</option><option value="custom-build.html" selected>Custom Build</option><option value="verify.html">Verify</option><option value="simulation.html">Simulation</option><option value="simulation-difficulty.html">Simulation difficulty</option><option value="techniques.html">Techniques</option><option value="cell-labels.html">Cell labels</option></select></nav>
+      <h1>Custom Build</h1>
+      <p class="description">Choose which cells should contain givens, then generate and check a puzzle.</p>
+    </header>
+    <section class="workspace cube-workspace" aria-label="3D Sudoku cube">
+      <p class="eyebrow">THE CUBE</p>
+      <h2>Select given cells</h2>
+      <p class="description">Click cells to select them. Use Tab and Enter or Space to select with the keyboard.</p>
+      <svg id="custom-cube" class="cube custom-cube" viewBox="0 0 600 570" role="group" aria-label="Select given cells"></svg>
+      <p id="selection-count" class="status">0 cells selected</p>
+      <button id="clear-selection" type="button">Clear selection</button>
+      <div class="difficulty-controls" role="group" aria-label="Difficulty range">
+        <label for="difficulty-min">Minimum difficulty <select id="difficulty-min"><option value="0" selected>0</option><option>200</option><option>300</option><option>500</option><option>800</option><option>900</option><option>1000</option></select></label>
+        <label for="difficulty-max">Maximum difficulty <select id="difficulty-max"><option>200</option><option>500</option><option>800</option><option>1000</option><option>2000</option><option selected>10000</option><option>1000000</option></select></label>
+      </div>
+      <button id="generate-cube" type="button">Generate <span aria-hidden="true">↗</span></button>
+      <button id="halt-generation" type="button" disabled>Halt</button>
+      <div id="generated-results" hidden><div class="cube-comparison">
+        <div><h3>Custom puzzle</h3><svg id="puzzle-cube" class="cube" viewBox="0 0 600 570" role="img" aria-label="Dug 3D Sudoku puzzle"></svg><div class="copy-controls"><button type="button" data-copy="text" data-board="0" disabled>Copy string</button><button type="button" data-copy="image" data-board="0" disabled>Copy image</button></div></div>
+        <div><h3>Completed puzzle</h3><svg id="solution-cube" class="cube" viewBox="0 0 600 570" role="img" aria-label="Completed 3D Sudoku puzzle"></svg><div class="copy-controls"><button type="button" data-copy="text" data-board="1" disabled>Copy string</button><button type="button" data-copy="image" data-board="1" disabled>Copy image</button></div></div>
+      </div>
+      </div>
+      <p id="cube-status" class="status" aria-live="polite">Select cells and generate a puzzle to check uniqueness.</p>
+      <p id="copy-status" class="status" aria-live="polite"></p>
+      <section id="walkthrough" class="walkthrough" hidden aria-labelledby="walkthrough-title">
+        <h2 id="walkthrough-title">Solution walkthrough</h2>
+        <p id="walkthrough-status" class="status" role="status"></p>
+        <svg id="walkthrough-cube" class="cube walkthrough-cube" viewBox="0 0 600 570" role="img" aria-label="Walkthrough position"></svg>
+        <label for="walkthrough-slider">Walkthrough step <span id="walkthrough-count"></span></label>
+        <input id="walkthrough-slider" type="range" min="0" max="0" value="0" disabled>
+        <div class="walkthrough-buttons">
+          <button type="button" id="walk-first">Step 0</button>
+          <button type="button" id="walk-prev">Previous step</button>
+          <button type="button" id="walk-next">Next step</button>
+          <button type="button" id="walk-last">Last step</button>
+        </div>
+        <p id="walkthrough-description" aria-live="polite"></p>
+        <p class="description">Step 0 shows all legal candidates as pencil marks. Red crossed-out marks were eliminated in this step. Gold marks referenced rows and pattern cells; blue marks directly changed cells.</p>
+        <h3>Technique tally</h3>
+        <p id="difficulty-rating" class="description">Calculating difficulty…</p>
+        <table><thead><tr><th scope="col">Technique</th><th scope="col">Rating per step</th><th scope="col">Steps</th></tr></thead><tbody id="technique-tally"></tbody></table>
+      </section>
+      <div class="highlight-controls" aria-label="Highlight cells">
+        <p class="description">Select one or more regions or rows to highlight their cells.</p>
+        <h3>Regions</h3>
+        <div id="region-controls" class="toggle-list" role="group" aria-label="Regions"></div>
+        <h3>Rows</h3>
+        <div id="row-controls" class="toggle-list" role="group" aria-label="Rows"></div>
+      </div>
+    </section>
+    <footer>3D SUDOKU <span>•</span> PUZZLE WORKSPACE</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Sudoku Simulation Difficulty</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="navigation.js" defer></script>
+  <script src="sudoku-core.js" defer></script>
+  <script src="techniques.js" defer></script>
+  <script src="rating.js" defer></script>
+  <script src="simulation-difficulty.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <nav class="page-navigation" aria-label="Pages"><label for="page-menu">Page</label><select id="page-menu"><option value="index.html">Generate</option><option value="custom-build.html">Custom Build</option><option value="verify.html">Verify</option><option value="simulation.html">Simulation</option><option value="simulation-difficulty.html" selected>Simulation difficulty</option><option value="techniques.html">Techniques</option><option value="cell-labels.html">Cell labels</option></select></nav>
+      <h1>Simulation difficulty</h1>
+      <p class="description">Dig puzzles and record their solving results, including brute-force steps when needed.</p>
+    </header>
+    <section class="workspace simulation-workspace" aria-label="Difficulty simulation">
+      <form id="difficulty-simulation-form" class="simulation-form">
+        <label>Total trials <select id="trials"><option>1</option><option>10</option><option>100</option><option selected>1000</option><option>10000</option><option>100000</option><option>1000000</option></select></label>
+        <div class="simulation-actions"><button type="submit" id="start">Start simulation</button><button type="button" id="stop" disabled>Stop</button></div>
+      </form>
+      <p id="progress" class="status" role="status" aria-live="polite">Ready to start.</p>
+      <section><h2>Hardest technique used</h2><p class="description">Based on the highest per-step rating encountered, including partial walkthroughs.</p><div id="hardest-distribution" class="histogram"></div><div class="matches"><h3>Wing puzzles</h3><p class="description">Puzzles whose hardest technique is a wing. Each line is a 48-character puzzle string; dots represent blanks.</p><label for="wing-puzzles">Puzzle strings</label><textarea id="wing-puzzles" rows="8" readonly spellcheck="false"></textarea><button type="button" id="copy-wing-puzzles" disabled>Copy all strings</button><p id="wing-copy-status" class="status" role="status"></p></div></section>
+      <section><h2>Difficulty rating</h2><p class="description">Final scores are the sum of step ratings for completely solved puzzles. Incomplete walkthroughs have no final rating.</p><div id="rating-distribution" class="histogram"></div></section>
+    </section>
+    <footer>3D SUDOKU <span>•</span> DIFFICULTY SIMULATION</footer>
+  </main>
+</body>
+</html>
