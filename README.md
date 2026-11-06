@@ -15,4 +15,4 @@ npm test
 
 ## Digging benchmark
 
-Run `npm run benchmark:dig -- 100` to generate 100 reproducible puzzles and report digging duration, final clue counts, and uniqueness-search work. The solver uses incremental eight-bit house masks and stops after finding two solutions.
+Run `npm run benchmark:dig -- 100` to generate 100 reproducible puzzles and compare the original peer-scan solver with the incremental bit-mask solver using identical seeded grids and removal orders. It reports mean, median, and p95 generation-and-dig times, and confirms that both versions produce identical unique puzzles.
