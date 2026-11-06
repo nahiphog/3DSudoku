@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build.cjs",
-    "test": "npm run build && node scripts/test.cjs"
+    "test": "npm run build && node scripts/test.cjs",
+    "benchmark:dig": "npm run build && node scripts/benchmark-dig.cjs"
   },
   "devDependencies": {
     "typescript": "~5.9.3"

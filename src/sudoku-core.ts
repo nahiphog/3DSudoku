@@ -14,6 +14,12 @@ const rows = [
 
 // Each group must contain all eight digits, so no peers may share a digit.
 const groups = [...regions, ...rows];
+// Every cell belongs to one region and two rows. Keeping these indices lets the
+// uniqueness solver derive candidates from three small bit masks instead of
+// rebuilding Sets from every peer at every search node.
+const cellGroups = Array.from({ length: 48 }, (_, cell) =>
+  groups.map((group, groupIndex) => group.includes(cell + 1) ? groupIndex : -1).filter(groupIndex => groupIndex >= 0)
+);
 const peers = Array.from({ length: 48 }, (_, index) => {
   const number = index + 1;
   return [...new Set(groups.filter(group => group.includes(number)).flat())]
@@ -51,38 +57,63 @@ function generateSolution() {
 }
 
 
-// Stop at two solutions: that is enough to establish non-uniqueness.
-function countSolutions(puzzle) {
+const FULL_DIGIT_MASK = 0xff;
+const solverBitCount = mask => { let count = 0; while (mask) { mask &= mask - 1; count++; } return count; };
+
+// Stop at two solutions: that is enough to establish non-uniqueness. Supplying
+// metrics is optional and is used only by the benchmark and developer profiling.
+function countSolutions(puzzle, metrics) {
   const values = puzzle.slice();
   if (values.length !== 48 || values.some(value => !Number.isInteger(value) || value < 0 || value > 8)) return 0;
-  if (values.some((value, cell) => value && peers[cell].some(peer => values[peer] === value))) return 0;
+  const groupMasks = Array(18).fill(0);
+  for (let cell = 0; cell < 48; cell++) {
+    const digit = values[cell];
+    if (!digit) continue;
+    const bit = 1 << (digit - 1);
+    for (const group of cellGroups[cell]) {
+      if (groupMasks[group] & bit) return 0;
+      groupMasks[group] |= bit;
+    }
+  }
   let count = 0;
-  function search() {
-    let chosen = -1;
-    let candidates = [];
+  function search(depth) {
+    if (metrics) {
+      metrics.nodes = (metrics.nodes || 0) + 1;
+      metrics.maxDepth = Math.max(metrics.maxDepth || 0, depth);
+    }
+    let chosen = -1, chosenMask = 0, best = 9;
     for (let cell = 0; cell < 48; cell++) {
       if (values[cell]) continue;
-      const used = new Set(peers[cell].map(peer => values[peer]));
-      const options = [1,2,3,4,5,6,7,8].filter(digit => !used.has(digit));
-      if (!options.length) return;
-      if (chosen === -1 || options.length < candidates.length) {
+      const [a, b, c] = cellGroups[cell];
+      const options = FULL_DIGIT_MASK & ~(groupMasks[a] | groupMasks[b] | groupMasks[c]);
+      const optionCount = solverBitCount(options);
+      if (metrics) metrics.candidateChecks = (metrics.candidateChecks || 0) + 1;
+      if (!optionCount) { if (metrics) metrics.deadEnds = (metrics.deadEnds || 0) + 1; return; }
+      if (optionCount < best) {
         chosen = cell;
-        candidates = options;
+        chosenMask = options;
+        best = optionCount;
+        if (best === 1) break;
       }
     }
-    if (chosen === -1) { count++; return; }
-    for (const digit of candidates) {
+    if (chosen === -1) { count++; if (metrics) metrics.solutions = count; return; }
+    const [a, b, c] = cellGroups[chosen];
+    for (let digit = 1; digit <= 8; digit++) {
+      const bit = 1 << (digit - 1);
+      if (!(chosenMask & bit)) continue;
       values[chosen] = digit;
-      search();
+      groupMasks[a] |= bit; groupMasks[b] |= bit; groupMasks[c] |= bit;
+      search(depth + 1);
       values[chosen] = 0;
+      groupMasks[a] &= ~bit; groupMasks[b] &= ~bit; groupMasks[c] &= ~bit;
       if (count >= 2) return;
     }
   }
-  search();
+  search(0);
   return count;
 }
 
-function digPuzzle(solution) {
+function digPuzzle(solution, metrics) {
   const puzzle = solution.slice();
   const order = Array.from({ length: 48 }, (_, index) => index);
   for (let i = order.length - 1; i > 0; i--) {
@@ -93,7 +124,10 @@ function digPuzzle(solution) {
   for (const cell of order) {
     const digit = puzzle[cell];
     puzzle[cell] = 0;
-    if (countSolutions(puzzle) !== 1) puzzle[cell] = digit;
+    if (metrics) metrics.removalChecks = (metrics.removalChecks || 0) + 1;
+    const solveMetrics = metrics ? {} : undefined;
+    if (countSolutions(puzzle, solveMetrics) !== 1) puzzle[cell] = digit;
+    if (metrics) for (const [key, value] of Object.entries(solveMetrics)) metrics[key] = (metrics[key] || 0) + value;
   }
   return puzzle;
 }
