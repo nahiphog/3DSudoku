@@ -160,6 +160,55 @@ function findWingSteps(state) {
   }
 }
 
+// A Remote Pair is an alternating chain of at least four bivalue cells with
+// the same two candidates. Adjacent cells see each other, so they must take
+// opposite digits. A cell seeing the opposite-parity endpoints therefore
+// cannot contain either digit. This is expressed solely through the cube's
+// peer graph; it does not assume a 9x9 grid geometry.
+function findRemotePairSteps(state) {
+  const { values, candidates } = state;
+  const steps = [];
+  const sees = (a, b) => a !== b && peers[a].includes(b);
+  const masks = [...new Set(candidates.filter((mask, cell) => !values[cell] && bitCount(mask) === 2))];
+  for (const mask of masks) {
+    const pairCells = candidates.map((candidate, cell) => !values[cell] && candidate === mask ? cell : -1).filter(cell => cell >= 0);
+    for (const start of pairCells) {
+      const distance = Array(48).fill(-1);
+      const previous = Array(48).fill(-1);
+      const queue = [start];
+      distance[start] = 0;
+      for (let index = 0; index < queue.length; index++) {
+        const cell = queue[index];
+        for (const next of pairCells) {
+          if (distance[next] >= 0 || !sees(cell, next)) continue;
+          distance[next] = distance[cell] + 1;
+          previous[next] = cell;
+          queue.push(next);
+        }
+      }
+      for (const end of pairCells) {
+        // An odd number of links means opposite endpoint parity. The minimum
+        // of three links keeps ordinary Naked Pairs out of this finder.
+        if (end <= start || distance[end] < 3 || distance[end] % 2 !== 1) continue;
+        const path = [];
+        for (let cell = end; cell >= 0; cell = previous[cell]) { path.push(cell); if (cell === start) break; }
+        path.reverse();
+        const chain = new Set(path);
+        const targets = candidates.map((candidate, cell) =>
+          !values[cell] && !chain.has(cell) && (candidate & mask) && sees(cell, start) && sees(cell, end) ? cell : -1
+        ).filter(cell => cell >= 0);
+        if (!targets.length) continue;
+        const eliminations = targets.flatMap(cell => digitsIn(candidates[cell] & mask).map(digit => [cell, digit]));
+        if (!eliminations.length) continue;
+        const step = makeStep('Remote Pair', [], path, digitsIn(mask), [], eliminations);
+        step.detail = `Cells ${path.map(cell => cell + 1).join(', ')} form an alternating remote-pair chain using digits ${digitsIn(mask).join(' and ')}. Each target sees opposite-parity endpoints, so neither digit can remain there.`;
+        steps.push(step);
+      }
+    }
+  }
+  return steps;
+}
+
 // Independent state-aware counter: checks all groups directly, including candidate exclusions.
 function countStateSolutions(state, limit = 2) {
   const values = state.values.slice();

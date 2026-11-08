@@ -4,6 +4,7 @@ const descriptions = {
   'Hidden Single': 'A digit has only one possible cell in a row or region.',
   'Locked Candidate': 'A digit confined to the intersection of two rows or regions can be removed from the rest of the other group.',
   'Locked candidates (3D sudoku)': 'If a digit can appear in exactly two cells of a row, remove it from any cell that sees both of them.',
+  'Remote Pair': 'An alternating chain of bivalue cells sharing two candidates forces those digits out of cells seeing opposite-parity endpoints.',
   'XY-Wing': 'A bivalue pivot and two bivalue wings force a shared wing digit into at least one wing.',
   'XYZ-Wing': 'A three-candidate pivot and two bivalue wings force their shared digit into at least one of the three cells.',
   'W-Wing': 'Two matching bivalue cells linked through a strong link force their other digit into at least one wing.',
